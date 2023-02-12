@@ -3,7 +3,14 @@ console.log("Integration Running")
 
 // accessing the Publitas API
 window.viewerReady = function (api, platform) {
-
+  // check if any cart exists in local store and set length appropriately
+  const setCartLength = () => {
+    const cart = JSON.parse(localStorage.getItem('cart'))
+    if (cart != null && cart.length > 0) {
+      api.cartContentChanged({ numItems: cart.length })
+    }
+  }
+  setCartLength()
   // set custom on-click action
   api.setProductAction(function (products) {
     // get identifier to store in cart
@@ -22,7 +29,7 @@ window.viewerReady = function (api, platform) {
     // push new cart to local store
     localStorage.setItem('cart', JSON.stringify(cart));
     // set number of items on cart identifier
-    api.cartContentChanged({ numItems: cart.length })
+    setCartLength()
   });
 
   // set cart button name and action
@@ -50,27 +57,47 @@ window.viewerReady = function (api, platform) {
         // display warning user has no cart to checkout with
         console.log("empty cart")
       } else {
-        // create object to pass to shopify (it needs ID and amount to construct URL)
-        const counts = {};
-        // loop through cart array and fill counts with object with a count incrementing each time item is found
-        for (const num of cart) {
-          counts[num] = (counts[num] || 0) + 1;
-        }
-        // creare URL to pass to shopify
-        let url = "https://pooks-treats.myshopify.com/cart/"
-        for (const item in counts) {
-          // set params in way required by shopify
-          const param = `${item}:${counts[item]},`
-          // add params to URL
-          url = url + param
-        }
+        //call function to create URL
+        url = buildUrl(cart)
         // open URL in new tab
         window.open(url);
       }
     },
     order: 2,
   });
+
+  api.addMenuItem({
+    name: 'Empty Cart',
+    title: 'Empty Cart',
+    iconUrl: 'https://res.cloudinary.com/dnkpuuudm/image/upload/c_pad,b_auto:predominant,fl_preserve_transparency/v1676225945/102661_eldii4.jpg',
+    action: function(){
+      // clear cart from local store
+      localStorage.removeItem('cart');
+      // call function to update count of items
+      setCartLength()
+      console.log("emptied cart")
+    },
+    order: 3,
+  });
 }
 
+
+const buildUrl = (cart) => {
+  // create object to pass to shopify (it needs ID and amount to construct URL)
+  const counts = {};
+  // loop through cart array and fill counts with object with a count incrementing each time item is found
+  for (const num of cart) {
+    counts[num] = (counts[num] || 0) + 1;
+  }
+  // create URL to pass to shopify
+  let url = "https://pooks-treats.myshopify.com/cart/"
+  for (const item in counts) {
+    // set params in way required by shopify
+    const param = `${item}:${counts[item]},`
+    // add params to URL
+    url = url + param
+  }
+  return url
+}
 
 // <script src="https://cdn.jsdelivr.net/gh/tpmessett/publitas-testing/app.js"></script>
