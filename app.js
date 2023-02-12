@@ -9,6 +9,7 @@ window.viewerReady = function (api, platform) {
     if (cart != null && cart.length > 0) {
       api.cartContentChanged({ numItems: cart.length })
     } else {
+      // set to 0 if cart cannot be found
       api.cartContentChanged({ numItems: 0 })
     }
   }
@@ -38,13 +39,8 @@ window.viewerReady = function (api, platform) {
   api.setCartButtonAction(function () {
     // display cart on click
 
-    // trigger checkout on button click
 
   }, "View Cart");
-
-  // Set Euros to GBP symbols
-
-  // Change got to webshop to "add to cart"
 
   // set checkout button
   api.addMenuItem({
