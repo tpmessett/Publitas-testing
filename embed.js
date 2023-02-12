@@ -98,4 +98,4 @@ const buildUrl = (cart) => {
   return url + '?ref=publitas'
 }
 
-// <script src="https://cdn.jsdelivr.net/gh/tpmessett/publitas-testing/app.js"></script>
+// <script src="https://cdn.jsdelivr.net/gh/tpmessett/publitas-testing/embed.js"></script>
