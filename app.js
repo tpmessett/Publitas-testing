@@ -8,6 +8,8 @@ window.viewerReady = function (api, platform) {
     const cart = JSON.parse(localStorage.getItem('cart'))
     if (cart != null && cart.length > 0) {
       api.cartContentChanged({ numItems: cart.length })
+    } else {
+      api.cartContentChanged({ numItems: 0 })
     }
   }
   setCartLength()
@@ -75,7 +77,6 @@ window.viewerReady = function (api, platform) {
       localStorage.removeItem('cart');
       // call function to update count of items
       setCartLength()
-      console.log("emptied cart")
     },
     order: 3,
   });
@@ -97,7 +98,8 @@ const buildUrl = (cart) => {
     // add params to URL
     url = url + param
   }
-  return url
+  // add ref for ecom tracking
+  return url + '?ref=publitas'
 }
 
 // <script src="https://cdn.jsdelivr.net/gh/tpmessett/publitas-testing/app.js"></script>
