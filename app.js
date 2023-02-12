@@ -45,7 +45,6 @@ window.viewerReady = function (api, platform) {
     action: function(){
       // get cart from local store
       const cart = JSON.parse(localStorage.getItem('cart'))
-      console.log(cart)
       // check cart exists
       if(cart == null) {
         // display warning user has no cart to checkout with
@@ -57,10 +56,16 @@ window.viewerReady = function (api, platform) {
         for (const num of cart) {
           counts[num] = (counts[num] || 0) + 1;
         }
-        console.log(counts);
         // creare URL to pass to shopify
-
+        let url = "https://pooks-treats.myshopify.com/cart/"
+        for (const item in counts) {
+          // set params in way required by shopify
+          const param = `${item}:${counts[item]},`
+          // add params to URL
+          url = url + param
+        }
         // open URL in new tab
+        window.open(url);
       }
     },
     order: 2,
