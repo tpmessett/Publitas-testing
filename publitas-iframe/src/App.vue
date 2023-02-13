@@ -25,10 +25,15 @@ export default defineComponent({
   },
   setup(){
     // get params which represent cart items, slice off first element as it's a ?
-    const params = window.location.search.slice(1).split(",")
+    const rawParams = window.location.search.slice(1)
+    const params = rawParams.split(",")
     // declare a ref as false and if params exist then change it to true
     const hasParams = ref(false)
-    if (params.length > 0) hasParams.value = true
+    if (rawParams.length > 0) {
+      hasParams.value = true
+    } else {
+      hasParams.value = false
+    }
     // split params into array of objects so they can be looped easily
     const productList = []
     const filterParams = (array, item) => {
@@ -40,7 +45,7 @@ export default defineComponent({
         return product.id;
       });
       if (idArray.includes(param) === false) {
-        const obj = {ammount: count, id: param}
+        const obj = {amount: count, id: param}
         productList.push(obj)
       }
     });

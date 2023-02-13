@@ -12,7 +12,6 @@ const httpLink = createHttpLink({
   'X-Shopify-Storefront-Access-Token': process.env.VUE_APP_SHOPIFY_ACCESS_TOKEN,
     }
  });
-
 // Cache implementation
 const cache = new InMemoryCache()
 
