@@ -18,7 +18,6 @@ window.viewerReady = function (api, platform) {
   api.setProductAction(function (products) {
     // get identifier to store in cart
     const identifier = products[0].webshopIdentifier
-    console.log(identifier)
     // get current cart
     let cart = JSON.parse(localStorage.getItem('cart'))
     // check if cart exists
@@ -37,8 +36,12 @@ window.viewerReady = function (api, platform) {
 
   // set cart button name and action
   api.setCartButtonAction(function () {
+    // get cart
+    const cart = JSON.parse(localStorage.getItem('cart'))
+    // pass cart items to URL to load
+    url = `localhost:8080?${cart}`
     // display cart on click
-
+    console.log(url)
 
   }, "View Cart");
 
@@ -80,12 +83,7 @@ window.viewerReady = function (api, platform) {
 
 
 const buildUrl = (cart) => {
-  // create object to pass to shopify (it needs ID and amount to construct URL)
-  const counts = {};
-  // loop through cart array and fill counts with object with a count incrementing each time item is found
-  for (const num of cart) {
-    counts[num] = (counts[num] || 0) + 1;
-  }
+  const counts = buildItemList(cart)
   // create URL to pass to shopify
   let url = "https://pooks-treats.myshopify.com/cart/"
   for (const item in counts) {
@@ -96,6 +94,16 @@ const buildUrl = (cart) => {
   }
   // add ref for ecom tracking
   return url + '?ref=publitas'
+}
+
+const buildItemList = (cart) => {
+  // create object to pass to shopify (it needs ID and amount to construct URL)
+  const counts = {};
+  // loop through cart array and fill counts with object with a count incrementing each time item is found
+  for (const num of cart) {
+    counts[num] = (counts[num] || 0) + 1;
+  }
+  return counts
 }
 
 // <script src="https://cdn.jsdelivr.net/gh/tpmessett/publitas-testing/embed.js"></script>
