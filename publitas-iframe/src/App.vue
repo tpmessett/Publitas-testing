@@ -4,14 +4,12 @@
     <div>
       <h1>Your Cart:</h1>
     </div>
-    <div>
-      <button class="checkout-button" @click="checkout()">
-        Checkout Now
-      </button>
-    </div>
     <div v-for="product in productList" :key="product.id">
       <product :product="product" @cart="buildCart"></product>
     </div>
+    <button class="checkout-button" @click="checkout()">
+      Checkout Now
+    </button>
   </div>
   <!-- if no params exist display a simple error -->
   <div v-else>
@@ -110,6 +108,8 @@ body {
   background-color:  black;
   padding: 8px;
   width: 100%;
- border:  none;
+  border:  none;
+  position: fixed;
+  bottom: 0;
 }
 </style>
