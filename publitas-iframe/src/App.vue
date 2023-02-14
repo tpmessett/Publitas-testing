@@ -106,5 +106,7 @@ body {
   background-color:  black;
   padding: 8px;
   width: 100%;
+  position: fixed;
+  bottom: 0;
 }
 </style>

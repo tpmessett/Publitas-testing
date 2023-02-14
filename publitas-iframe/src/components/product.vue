@@ -10,9 +10,9 @@
       </div>
     </div>
     <div class="cart-quantity">
-      <div class="button" @click="reduceQuantity()">-</div>
+      <button class="button" @click="reduceQuantity()">-</button>
       <div class="amount">{{productDetails.quantity}}</div>
-      <div class="button" @click="increaseQuantity()">+</div>
+      <button class="button" @click="increaseQuantity()">+</button>
     </div>
   </div>
 </template>
@@ -137,6 +137,9 @@
     flex-direction: column;
     justify-content:  center;
     padding:  10%;
+    background-color: white;
+    color: black;
+    border: none;
   }
   .amount {
     display:  flex;
