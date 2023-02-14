@@ -2,11 +2,11 @@
   <!-- if params exist get and display cart items -->
   <div v-if="hasParams">
     <h1>Your Cart:</h1>
+    <button class="checkout-button" @click="checkout()">
+      Checkout Now
+    </button>
     <div v-for="product in productList" :key="product.id">
       <product :product="product" @cart="buildCart"></product>
-    </div>
-    <div class="checkout-button" @click="checkout()">
-      Checkout Now
     </div>
   </div>
   <!-- if no params exist display a simple error -->
@@ -105,8 +105,6 @@ body {
   color: white;
   background-color:  black;
   padding: 8px;
-  position: fixed;
-  bottom: 0;
   width: 100%;
 }
 </style>
