@@ -61,7 +61,9 @@
         cartBuilder()
       }
       const cartBuilder = () => {
-        emit('cart', {'variant': productDetails.value.variant, 'quantity': productDetails.value.quantity })
+        const itemToCart = {'variant': productDetails.value.variant, 'quantity': productDetails.value.quantity }
+        emit('cart', itemToCart)
+        window.parent.postMessage(JSON.stringify(itemToCart), "*")
       }
 
       return {

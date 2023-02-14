@@ -72,8 +72,7 @@ export default defineComponent({
         url = url + `${item.variant}:${item.quantity},`
       })
       url = url + '?ref=publitas'
-      //window.open(url)
-      window.parent.postMessage(url, "*")
+      window.open(url)
     }
     return {
       productList,
