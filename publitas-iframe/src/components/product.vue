@@ -1,34 +1,45 @@
 <template>
-  <div class="cart-outline">
+  <div v-if="productInCart" class="cart-outline">
     <div v-if="result" class="cart-item">
       <div>
-        <h3>{{result.product.title}}</h3>
-        <p>{{result.product.description}}</p>
+        <h3>{{productDetails.title}}</h3>
+        <p>{{productDetails.description}}</p>
       </div>
       <div>
-        <h3>£{{price}}</h3>
+        <h3>£{{productDetails.price}}</h3>
       </div>
     </div>
     <div class="cart-quantity">
-      {{product.amount}}
+      <div class="button" @click="reduceQuantity()">-</div>
+      <div class="amount">{{productDetails.quantity}}</div>
+      <div class="button" @click="increaseQuantity()">+</div>
     </div>
   </div>
 </template>
 
 <script>
-  import { defineComponent } from 'vue';
+  import { defineComponent, watch, ref } from 'vue';
   import { useQuery } from "@vue/apollo-composable";
   import { gql } from "@apollo/client/core"
 
   export default defineComponent({
     name: 'product',
+    emits: ['cart'],
     components: {
 
     },
     props: {
       product: Object
     },
-    setup(props) {
+    setup(props, { emit }) {
+      const productDetails = ref ({
+        title: "",
+        description: "",
+        price: 0,
+        quantity: props.product.amount,
+        vairant: ""
+      })
+      const productInCart = ref(false)
       const PRODUCT_QUERY = gql`
       query {
         product(id: "gid://shopify/Product/${props.product.id}") {
@@ -57,15 +68,37 @@
         }
       }
       `;
-      const { result, error } = useQuery(PRODUCT_QUERY)
-      const price = result.product
-      console.log(result)
-      console.log("error")
-      console.log(error)
+      const { result } = useQuery(PRODUCT_QUERY)
+      watch(result, (returnedDetails) => {
+        productDetails.value.title = returnedDetails.product.title
+        productDetails.value.description = returnedDetails.product.description
+        productDetails.value.price = parseFloat(returnedDetails.product.variants.nodes[0].price.amount).toFixed(2)
+        const variantSplitArray = returnedDetails.product.variants.nodes[0].id.split('/')
+        productDetails.value.variant = variantSplitArray[variantSplitArray.length - 1]
+        productInCart.value = true
+        cartBuilder()
+      })
+      const reduceQuantity = () => {
+        productDetails.value.quantity -= 1
+        if (productDetails.value.quantity < 1) {
+          productInCart.value = false
+        }
+        cartBuilder()
+      }
+      const increaseQuantity = () => {
+        productDetails.value.quantity += 1
+        cartBuilder()
+      }
+      const cartBuilder = () => {
+        emit('cart', {'variant': productDetails.value.variant, 'quantity': productDetails.value.quantity })
+      }
+
       return {
+        productDetails,
         result,
-        error,
-        price
+        reduceQuantity,
+        increaseQuantity,
+        productInCart
       }
     }
   })
@@ -80,7 +113,6 @@
   .cart-outline {
     margin: 1% 5%;
     width: 90%;
-    min-height: 33vh;
     border: 2px solid #000;
     display:  flex;
     justify-content: space-between;
@@ -92,7 +124,24 @@
   }
 
   .cart-quantity {
-    text-align:  right;
+    text-align:  center;
     padding:  3%;
+    display:  flex;
+    justify-content: space-evenly;
+    font-size:  24px;
+    min-width: 20%
+  }
+
+  .button {
+    display:  flex;
+    flex-direction: column;
+    justify-content:  center;
+    padding:  10%;
+  }
+  .amount {
+    display:  flex;
+    flex-direction: column;
+    justify-content:  center;
+    padding:  10%;
   }
 </style>
