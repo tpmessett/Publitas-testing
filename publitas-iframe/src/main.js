@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import router from './router'
 //import VueApollo from "vue-apollo";
 
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
@@ -21,6 +22,7 @@ const apolloClient = new ApolloClient({
   cache,
 })
 
-const app = createApp(App).provide(DefaultApolloClient, apolloClient)
+const app = createApp(App).use(router).provide(DefaultApolloClient, apolloClient)
+
 
 app.mount('#app')
