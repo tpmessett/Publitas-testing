@@ -8,7 +8,7 @@
       <product :product="product" @cart="buildCart"></product>
     </div>
     <button class="checkout-button" @click="checkout()">
-      Checkout Now
+      <strong>CHECKOUT NOW</strong>
     </button>
   </div>
   <!-- if no params exist display a simple error -->
@@ -108,8 +108,10 @@ body {
   background-color:  black;
   padding: 8px;
   width: 100%;
+  min-height: 40px;
   border:  none;
   position: fixed;
   bottom: 0;
+  left: 0;
 }
 </style>
