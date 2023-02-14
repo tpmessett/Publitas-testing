@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client/core"
 
 export const PRODUCT_QUERY = gql`
-      query($id: ID!) {
-        product(id: $id) {
+      query($product: id!) {
+        product(id: $product) {
           title
           description
           images(first: 1) {

@@ -20,7 +20,7 @@
 <script>
   import { defineComponent, watch, ref } from 'vue';
   import { useQuery } from "@vue/apollo-composable";
-  import { PRODUCT_QUERY } from "@/services/queries"
+  import { gql } from "@apollo/client/core"
   export default defineComponent({
     name: 'product',
     emits: ['cart'],
@@ -38,8 +38,37 @@
         quantity: props.product.amount,
         vairant: ""
       })
+      const PRODUCT_QUERY = gql`
+      query {
+        product(id: "gid://shopify/Product/${props.product.id}") {
+          title
+          description
+          images(first: 1) {
+            nodes {
+              src
+            }
+          }
+          variants(first: 10) {
+            nodes {
+              id
+              title
+              availableForSale
+              compareAtPrice {
+                amount
+                currencyCode
+              }
+              price {
+                amount
+                currencyCode
+              }
+            }
+          }
+        }
+      }
+      `;
       const productInCart = ref(false)
-      const { result } = useQuery(PRODUCT_QUERY, ``)
+      const { result, error } = useQuery(PRODUCT_QUERY)
+      console.log(error)
       watch(result, (returnedDetails) => {
         productDetails.value.title = returnedDetails.product.title
         productDetails.value.description = returnedDetails.product.description
