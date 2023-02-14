@@ -1,10 +1,14 @@
 <template>
   <!-- if params exist get and display cart items -->
   <div v-if="hasParams">
-    <h1>Your Cart:</h1>
-    <button class="checkout-button" @click="checkout()">
-      Checkout Now
-    </button>
+    <div>
+      <h1>Your Cart:</h1>
+    </div>
+    <div>
+      <button class="checkout-button" @click="checkout()">
+        Checkout Now
+      </button>
+    </div>
     <div v-for="product in productList" :key="product.id">
       <product :product="product" @cart="buildCart"></product>
     </div>
@@ -106,7 +110,6 @@ body {
   background-color:  black;
   padding: 8px;
   width: 100%;
-  position: fixed;
-  bottom: 0;
+ border:  none;
 }
 </style>

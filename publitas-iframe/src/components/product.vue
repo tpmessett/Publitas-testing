@@ -139,6 +139,7 @@
     padding:  10%;
     background-color: white;
     color: black;
+    font-size:  24px;
     border: none;
   }
   .amount {
