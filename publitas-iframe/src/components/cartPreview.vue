@@ -19,9 +19,7 @@
 
 <script>
   import { defineComponent, watch, ref } from 'vue';
-  import { useQuery } from "@vue/apollo-composable";
-  import { gql } from "@apollo/client/core"
-
+  import getProduct from '@/services/queries';
   export default defineComponent({
     name: 'product',
     emits: ['cart'],
@@ -33,42 +31,13 @@
     },
     setup(props, { emit }) {
       const productDetails = ref ({
+        quantity: props.product.amount,
         title: "",
         description: "",
-        price: 0,
-        quantity: props.product.amount,
-        vairant: ""
+        price: 0.00,
       })
       const productInCart = ref(false)
-      const PRODUCT_QUERY = gql`
-      query {
-        product(id: "gid://shopify/Product/${props.product.id}") {
-          title
-          description
-          images(first: 1) {
-            nodes {
-              src
-            }
-          }
-          variants(first: 10) {
-            nodes {
-              id
-              title
-              availableForSale
-              compareAtPrice {
-                amount
-                currencyCode
-              }
-              price {
-                amount
-                currencyCode
-              }
-            }
-          }
-        }
-      }
-      `;
-      const { result } = useQuery(PRODUCT_QUERY)
+      const result = getProduct(props.product.id)
       watch(result, (returnedDetails) => {
         productDetails.value.title = returnedDetails.product.title
         productDetails.value.description = returnedDetails.product.description
@@ -90,7 +59,9 @@
         cartBuilder()
       }
       const cartBuilder = () => {
-        emit('cart', {'variant': productDetails.value.variant, 'quantity': productDetails.value.quantity })
+        const itemToCart = {'product': props.product.id, 'quantity': productDetails.value.quantity, 'from': 'cart' }
+        emit('cart', itemToCart)
+        window.parent.postMessage(JSON.stringify(itemToCart), "*")
       }
 
       return {
@@ -104,7 +75,7 @@
   })
 </script>
 
-<style>
+<style scoped>
   h1 {
     margin: 2%;
     font-size: 22px;
