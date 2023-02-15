@@ -7,7 +7,7 @@ window.viewerReady = function (api, platform) {
   const setCartLength = () => {
     const cart = JSON.parse(localStorage.getItem('cart'))
     if (cart != null && cart.length > 0) {
-      api.cartContentChanged({ numItems: cart.length })
+      api.cartContentChanged({ numItems: cart.length }) //THIS
     } else {
       // set to 0 if cart cannot be found
       api.cartContentChanged({ numItems: 0 })
@@ -75,54 +75,91 @@ window.viewerReady = function (api, platform) {
       };
     api.showExternalContent(url, options);
   }
-}
 
 
-const buildUrl = (cart) => {
-  const counts = buildItemList(cart)
-  // create URL to pass to shopify
-  let url = "https://pooks-treats.myshopify.com/cart/"
-  for (const item in counts) {
-    // set params in way required by shopify
-    const param = `${item}:${counts[item]},`
-    // add params to URL
-    url = url + param
-  }
-  // add ref for ecom tracking
-  return url + '?ref=publitas'
-}
-
-const buildItemList = (cart) => {
-  // create object to pass to shopify (it needs ID and amount to construct URL)
-  const counts = {};
-  // loop through cart array and fill counts with object with a count incrementing each time item is found
-  for (const num of cart) {
-    counts[num] = (counts[num] || 0) + 1;
-  }
-  return counts
-}
-
-const trustedOrigin = "https://main--sparkly-buttercream-3719ff.netlify.app";
-
-window.addEventListener("message", onMsg, false);
-
-function onMsg(msg) {
-  if (!trustedOrigin.includes(msg.origin)){
-    return
-  };
-  const data = JSON.parse(msg.data)
-  if (data.from === "product") {
-    const button = document.getElementById('popup_close')
-    const secondButton = document.querySelectorAll('button[aria-label="Close"]')
-    if(button === null){
-      secondButton[0].click()
+  const buildUrl = (cart) => {
+    const counts = buildItemList(cart)
+    // create URL to pass to shopify
+    let url = "https://pooks-treats.myshopify.com/cart/"
+    for (const item in counts) {
+      // set params in way required by shopify
+      const param = `${item}:${counts[item]},`
+      // add params to URL
+      url = url + param
     }
-    else {
-      button.click()
+    // add ref for ecom tracking
+    return url + '?ref=publitas'
+  }
+
+  const buildItemList = (cart) => {
+    // create object to pass to shopify (it needs ID and amount to construct URL)
+    const counts = {};
+    // loop through cart array and fill counts with object with a count incrementing each time item is found
+    for (const num of cart) {
+      counts[num] = (counts[num] || 0) + 1;
     }
-    console.log("done");
+    return counts
+  }
+
+  const trustedOrigin = "https://main--sparkly-buttercream-3719ff.netlify.app";
+
+  window.addEventListener("message", onMsg, false);
+
+  function onMsg(msg) {
+    if (!trustedOrigin.includes(msg.origin)){
+      return
+    };
+    const data = JSON.parse(msg.data)
+    cartUpdate(msg.data)
+    if (data.from === "product") {
+      const button = document.getElementById('popup_close')
+      const secondButton = document.querySelectorAll('button[aria-label="Close"]')
+      if(button === null){
+        secondButton[0].click()
+      }
+      else {
+        button.click()
+      }
+    }
+  }
+
+  const cartUpdate = (data) => {
+    const cart = JSON.parse(localStorage.getItem('cart'))
+    const toAdd = JSON.parse(data)
+    const cartItem = {
+      "id": toAdd.product,
+      "quantity": toAdd.quantity
+    }
+    if (cart != null && cart.length > 0) {
+      console.log('cart')
+      console.log(cart)
+      // I know function calls are expensive but generally expect arrays to be small, for prod may re-write as a loop
+      const found = cart.find(item => item.id === cartItem.id);
+      console.log('found')
+      console.log(found)
+      if (!found) {
+        console.log('in if')
+        cart.push(cartItem)
+      } else {
+        console.log('in else')
+        const index = cart.findIndex(item => item.id === cartItem.id)
+        console.log(index)
+        const updatedItem = {
+          "id": cartItem.id,
+          "quantity": cartItem.quantity + found.quantity
+        }
+        cart[index] = updatedItem
+      }
+      console.log('cart')
+      console.log(cart)
+      localStorage.setItem('cart', JSON.stringify(cart))
+    } else {
+      const newCart = [cartItem]
+      console.log('set new cart')
+      localStorage.setItem('cart', JSON.stringify(newCart))
+    }
+    setCartLength()
   }
 }
-
 
 // <script src="https://cdn.jsdelivr.net/gh/tpmessett/publitas-testing/embed.js"></script>
