@@ -14,24 +14,13 @@ window.viewerReady = function (api, platform) {
     }
   }
   setCartLength()
-  // set custom on-click action
+
+  // set custom on-click action to open custom product page
   api.setProductAction(function (products) {
     // get identifier to store in cart
     const identifier = products[0].webshopIdentifier
-    // get current cart
-    let cart = JSON.parse(localStorage.getItem('cart'))
-    // check if cart exists
-    if (cart == null) {
-      // if it does not create it as an array with current identifier
-      cart = [identifier]
-    } else {
-      // if it does push the current identifier. This means you can have multiples of same ID in cart, dealt with later.
-      cart.push(identifier)
-    }
-    // push new cart to local store
-    localStorage.setItem('cart', JSON.stringify(cart));
-    // set number of items on cart identifier
-    setCartLength()
+    url = `https://main--sparkly-buttercream-3719ff.netlify.app/product/?${identifier}`
+    openIframe(url)
   });
 
   // set cart button name and action
@@ -39,10 +28,9 @@ window.viewerReady = function (api, platform) {
     // get cart
     const cart = JSON.parse(localStorage.getItem('cart'))
     // pass cart items to URL to load
-    url = `localhost:8080?${cart}`
+    url = `https://main--sparkly-buttercream-3719ff.netlify.app/?${cart}`
     // display cart on click
-    console.log(url)
-
+    openIframe(url)
   }, "View Cart");
 
   // set checkout button
@@ -104,6 +92,13 @@ const buildItemList = (cart) => {
     counts[num] = (counts[num] || 0) + 1;
   }
   return counts
+}
+
+const openIframe = (url) => {
+  const options = {
+      background: '#ffffff'
+    };
+  api.showExternalContent(url, options);
 }
 
 // <script src="https://cdn.jsdelivr.net/gh/tpmessett/publitas-testing/embed.js"></script>
