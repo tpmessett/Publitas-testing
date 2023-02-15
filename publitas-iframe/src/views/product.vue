@@ -76,7 +76,7 @@ export default defineComponent({
       }
 
       const addToCart = () => {
-        const itemToCart = {'variant': productDetails.value.variant, 'quantity': productDetails.value.quantity }
+        const itemToCart = {'product': rawParams, 'quantity': productDetails.value.quantity, 'from': 'product' }
         window.parent.postMessage(JSON.stringify(itemToCart), "*")
       }
 
