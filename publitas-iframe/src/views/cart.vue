@@ -29,7 +29,7 @@ export default defineComponent({
     cartPreview
   },
   setup(){
-    // get params which represent cart items, slice off first element as it's a ?
+    // declared for building cart URL
     const cartItems = ref([])
     const buildCart = (product) => {
       const productIndex = cartItems.value.findIndex(i => i.variant === product.variant)
@@ -42,6 +42,7 @@ export default defineComponent({
         cartItems.value[productIndex] = product
       }
     }
+    // get raw params and slice off ? at start
     const rawParams = window.location.search.slice(1)
     let productList = []
     // declare a ref as false and if params exist then change it to true
