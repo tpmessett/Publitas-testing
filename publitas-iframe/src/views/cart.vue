@@ -49,7 +49,7 @@ export default defineComponent({
     console.log(params)
     // declare a ref as false and if params exist then change it to true
     const hasParams = ref(false)
-    if (rawParams != null || rawParams.length > 0) {
+    if (rawParams != null || rawParams != "null" || rawParams.length > 0) {
       hasParams.value = true
     } else {
       hasParams.value = false
