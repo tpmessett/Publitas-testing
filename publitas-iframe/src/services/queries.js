@@ -1,8 +1,10 @@
 import { gql } from "@apollo/client/core"
+import { useQuery } from "@vue/apollo-composable";
 
-export const PRODUCT_QUERY = gql`
-      query($product: id!) {
-        product(id: $product) {
+export default function getProduct(id){
+  const PRODUCT_QUERY = gql`
+      query {
+        product(id: "gid://shopify/Product/${id}") {
           title
           description
           images(first: 1) {
@@ -28,3 +30,7 @@ export const PRODUCT_QUERY = gql`
         }
       }
       `;
+  const { result, error } = useQuery(PRODUCT_QUERY)
+  console.log(error)
+  return result
+}

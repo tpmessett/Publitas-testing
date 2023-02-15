@@ -32,11 +32,10 @@
     },
     setup(props, { emit }) {
       const productDetails = ref ({
+        quantity: props.product.amount,
         title: "",
         description: "",
-        price: 0,
-        quantity: props.product.amount,
-        vairant: ""
+        price: 0.00,
       })
       const PRODUCT_QUERY = gql`
       query {
@@ -106,7 +105,7 @@
   })
 </script>
 
-<style>
+<style scoped>
   h1 {
     margin: 2%;
     font-size: 22px;
