@@ -7,7 +7,7 @@ window.viewerReady = function (api, platform) {
   const setCartLength = () => {
     const cart = JSON.parse(localStorage.getItem('cart'))
     if (cart != null && cart.length > 0) {
-      api.cartContentChanged({ numItems: cart.length }) //THIS
+      api.cartContentChanged({ numItems: cart.map(i=>i.quantity).reduce((a,b)=>a+b) })
     } else {
       // set to 0 if cart cannot be found
       api.cartContentChanged({ numItems: 0 })
@@ -27,9 +27,9 @@ window.viewerReady = function (api, platform) {
   // set cart button name and action
   api.setCartButtonAction(function () {
     // get cart
-    const cart = JSON.parse(localStorage.getItem('cart'))
+    const cart = localStorage.getItem('cart')
     // pass cart items to URL to load
-    url = `https://main--sparkly-buttercream-3719ff.netlify.app/?${cart}`
+    url = `https://main--sparkly-buttercream-3719ff.netlify.app/?${encodeURIComponent(cart)}`
     // display cart on click
     openIframe(url)
   }, "View Cart");
@@ -46,6 +46,7 @@ window.viewerReady = function (api, platform) {
       if(cart == null) {
         // display warning user has no cart to checkout with
         console.log("empty cart")
+        openIframe("https://main--sparkly-buttercream-3719ff.netlify.app")
       } else {
         //call function to create URL
         url = buildUrl(cart)
@@ -78,27 +79,16 @@ window.viewerReady = function (api, platform) {
 
 
   const buildUrl = (cart) => {
-    const counts = buildItemList(cart)
     // create URL to pass to shopify
     let url = "https://pooks-treats.myshopify.com/cart/"
-    for (const item in counts) {
-      // set params in way required by shopify
-      const param = `${item}:${counts[item]},`
-      // add params to URL
+    cart.forEach(item => {
+      console.log(item)
+      const param = `${item.variant}:${item.quantity},`
       url = url + param
-    }
+      console.log(url)
+    })
     // add ref for ecom tracking
     return url + '?ref=publitas'
-  }
-
-  const buildItemList = (cart) => {
-    // create object to pass to shopify (it needs ID and amount to construct URL)
-    const counts = {};
-    // loop through cart array and fill counts with object with a count incrementing each time item is found
-    for (const num of cart) {
-      counts[num] = (counts[num] || 0) + 1;
-    }
-    return counts
   }
 
   const trustedOrigin = "https://main--sparkly-buttercream-3719ff.netlify.app";
@@ -128,34 +118,25 @@ window.viewerReady = function (api, platform) {
     const toAdd = JSON.parse(data)
     const cartItem = {
       "id": toAdd.product,
-      "quantity": toAdd.quantity
+      "quantity": toAdd.quantity,
+      "variant": toAdd.variant
     }
     if (cart != null && cart.length > 0) {
-      console.log('cart')
-      console.log(cart)
       // I know function calls are expensive but generally expect arrays to be small, for prod may re-write as a loop
       const found = cart.find(item => item.id === cartItem.id);
-      console.log('found')
-      console.log(found)
       if (!found) {
-        console.log('in if')
         cart.push(cartItem)
       } else {
-        console.log('in else')
         const index = cart.findIndex(item => item.id === cartItem.id)
-        console.log(index)
         const updatedItem = {
           "id": cartItem.id,
           "quantity": cartItem.quantity + found.quantity
         }
         cart[index] = updatedItem
       }
-      console.log('cart')
-      console.log(cart)
       localStorage.setItem('cart', JSON.stringify(cart))
     } else {
       const newCart = [cartItem]
-      console.log('set new cart')
       localStorage.setItem('cart', JSON.stringify(newCart))
     }
     setCartLength()

@@ -43,30 +43,16 @@ export default defineComponent({
       }
     }
     const rawParams = window.location.search.slice(1)
-    const params = rawParams.split(",")
+    let productList = []
     // declare a ref as false and if params exist then change it to true
     const hasParams = ref(false)
     if (rawParams != null && rawParams.length > 4) {
+      productList = JSON.parse(decodeURIComponent(rawParams))
+      console.log(productList)
       hasParams.value = true
     } else {
       hasParams.value = false
     }
-    console.log(hasParams)
-    // split params into array of objects so they can be looped easily
-    const productList = []
-    const filterParams = (array, item) => {
-      return array.filter((b) => b == item).length;
-    };
-    params.forEach((param) => {
-      const count = filterParams(params, param)
-      const idArray = productList.map(function (product) {
-        return product.id;
-      });
-      if (idArray.includes(param) === false) {
-        const obj = {amount: count, id: param}
-        productList.push(obj)
-      }
-    });
     const checkout = () => {
       let url = "https://pooks-treats.myshopify.com/cart/"
       cartItems.value.forEach((item) => {

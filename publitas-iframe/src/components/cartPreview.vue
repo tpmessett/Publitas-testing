@@ -31,7 +31,7 @@
     },
     setup(props, { emit }) {
       const productDetails = ref ({
-        quantity: props.product.amount,
+        quantity: props.product.quantity,
         title: "",
         description: "",
         price: 0.00,
@@ -59,7 +59,7 @@
         cartBuilder()
       }
       const cartBuilder = () => {
-        const itemToCart = {'product': props.product.id, 'quantity': productDetails.value.quantity, 'from': 'cart' }
+        const itemToCart = {'product': props.product.id, 'variant': productDetails.value.variant, 'quantity': productDetails.value.quantity, 'from': 'cart' }
         emit('cart', itemToCart)
         window.parent.postMessage(JSON.stringify(itemToCart), "*")
       }
