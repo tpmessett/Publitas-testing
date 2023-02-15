@@ -19,6 +19,7 @@ window.viewerReady = function (api, platform) {
   api.setProductAction(function (products) {
     // get identifier to store in cart
     const identifier = products[0].webshopIdentifier
+    console.log(identifier)
     url = `https://main--sparkly-buttercream-3719ff.netlify.app/product/?${identifier}`
     openIframe(url)
   });
@@ -67,6 +68,13 @@ window.viewerReady = function (api, platform) {
     },
     order: 3,
   });
+
+  const openIframe = (url) => {
+    const options = {
+        background: '#ffffff'
+      };
+    api.showExternalContent(url, options);
+  }
 }
 
 
@@ -94,11 +102,27 @@ const buildItemList = (cart) => {
   return counts
 }
 
-const openIframe = (url) => {
-  const options = {
-      background: '#ffffff'
-    };
-  api.showExternalContent(url, options);
+const trustedOrigin = "https://main--sparkly-buttercream-3719ff.netlify.app";
+
+window.addEventListener("message", onMsg, false);
+
+function onMsg(msg) {
+  if (!trustedOrigin.includes(msg.origin)){
+    return
+  };
+  const data = JSON.parse(msg.data)
+  if (data.from === "product") {
+    const button = document.getElementById('popup_close')
+    const secondButton = document.querySelectorAll('button[aria-label="Close"]')
+    if(button === null){
+      secondButton[0].click()
+    }
+    else {
+      button.click()
+    }
+    console.log("done");
+  }
 }
+
 
 // <script src="https://cdn.jsdelivr.net/gh/tpmessett/publitas-testing/embed.js"></script>
