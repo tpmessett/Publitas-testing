@@ -119,4 +119,8 @@
     justify-content:  center;
     padding:  10%;
   }
+
+  button {
+    cursor: pointer;
+  }
 </style>

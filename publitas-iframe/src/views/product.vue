@@ -76,6 +76,7 @@ export default defineComponent({
       }
 
       const addToCart = () => {
+        console.log("in cart")
         const itemToCart = {'product': rawParams, 'quantity': productDetails.value.quantity, 'from': 'product' }
         window.parent.postMessage(JSON.stringify(itemToCart), "*")
       }
@@ -171,6 +172,7 @@ export default defineComponent({
     padding: 8px;
     width: 96%;
     margin: 2%;
+    cursor: pointer;
   }
 
   .add-button {

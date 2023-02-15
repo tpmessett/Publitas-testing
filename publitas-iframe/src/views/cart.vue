@@ -44,9 +44,6 @@ export default defineComponent({
     }
     const rawParams = window.location.search.slice(1)
     const params = rawParams.split(",")
-    console.log(rawParams)
-    console.log(rawParams.length)
-    console.log(params)
     // declare a ref as false and if params exist then change it to true
     const hasParams = ref(false)
     if (rawParams != null && rawParams.length > 4) {
