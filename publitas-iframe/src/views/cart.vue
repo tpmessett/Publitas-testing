@@ -90,5 +90,6 @@ export default defineComponent({
   position: fixed;
   bottom: 0;
   left: 0;
+  cursor: pointer;
 }
 </style>

@@ -128,11 +128,15 @@ window.viewerReady = function (api, platform) {
         cart.push(cartItem)
       } else {
         const index = cart.findIndex(item => item.id === cartItem.id)
-        const updatedItem = {
-          "id": cartItem.id,
-          "quantity": cartItem.quantity + found.quantity
+        if (toAdd.from === "cart"){
+          cart[index] = cartItem
+        } else {
+          const updatedItem = {
+            "id": cartItem.id,
+            "quantity": cartItem.quantity + found.quantity
+          }
+          cart[index] = updatedItem
         }
-        cart[index] = updatedItem
       }
       localStorage.setItem('cart', JSON.stringify(cart))
     } else {
