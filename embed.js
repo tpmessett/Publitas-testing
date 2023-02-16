@@ -83,7 +83,7 @@ window.viewerReady = function (api, platform) {
     const options = {
         background: '#ffffff'
       };
-    api.showExternalContent(url, options).on('close', onClose);;
+    api.showExternalContent(url, options)
   }
 
 
