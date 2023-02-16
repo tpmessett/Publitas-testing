@@ -49,7 +49,6 @@ export default defineComponent({
     const hasParams = ref(false)
     if (rawParams != null && rawParams.length > 4) {
       productList = JSON.parse(decodeURIComponent(rawParams))
-      console.log(productList)
       hasParams.value = true
     } else {
       hasParams.value = false

@@ -19,7 +19,6 @@ window.viewerReady = function (api, platform) {
   api.setProductAction(function (products) {
     // get identifier to store in cart
     const identifier = products[0].webshopIdentifier
-    console.log(identifier)
     url = `https://main--sparkly-buttercream-3719ff.netlify.app/product/?${identifier}`
     openIframe(url)
   });
@@ -92,10 +91,8 @@ window.viewerReady = function (api, platform) {
     // create URL to pass to shopify
     let url = "https://pooks-treats.myshopify.com/cart/"
     cart.forEach(item => {
-      console.log(item)
       const param = `${item.variant}:${item.quantity},`
       url = url + param
-      console.log(url)
     })
     // add ref for ecom tracking
     return url + '?ref=publitas'
@@ -157,4 +154,4 @@ window.viewerReady = function (api, platform) {
   }
 }
 
-// <script src="https://cdn.jsdelivr.net/gh/tpmessett/publitas-testing/embed.js"></script>
+

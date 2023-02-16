@@ -30,7 +30,6 @@
       product: Object
     },
     setup(props, { emit }) {
-      console.log(props)
       const productDetails = ref ({
         quantity: props.product.quantity,
         title: "",
@@ -51,7 +50,6 @@
 
       const getIndex = (array) => {
         let price = 0.0
-        console.log(array)
         array.forEach(item => {
           const splitArray = item.id.split('/')
           if(props.product.variant === splitArray[splitArray.length - 1]) {
