@@ -18,6 +18,19 @@
           <h4 v-if="productDetails.description">More Info:</h4>
           <p>{{productDetails.description}}</p>
         </div>
+        <div v-if="productDetails.variants">
+          <h4>Please Select:</h4>
+          <div v-for="variant in productDetails.variants" :key="variant.id">
+            <div class="variant"
+              :id="variant.title"
+              :class="(productDetails.defaultVariant == variant.title)?'border':'no-border'"
+              @click="setVariant(variant.id, variant.title, variant.price.amount, variant.compareAtPrice.amount)"
+            >
+              <div>{{variant.title}}</div>
+              <div>£{{parseFloat(variant.price.amount).toFixed(2)}}</div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="footer-buttons">
         <div class="add-cart">
@@ -50,6 +63,7 @@ export default defineComponent({
       })
     const rawParams = window.location.search.slice(1)
     const result = getProduct(rawParams)
+    const multiVariant = ref(false)
     watch(result, (returnedDetails) => {
         productDetails.value.title = returnedDetails.product.title
         productDetails.value.description = returnedDetails.product.description
@@ -60,26 +74,39 @@ export default defineComponent({
         if (returnedDetails.product.images.nodes.length > 0) {
           productDetails.value.image = returnedDetails.product.images.nodes[0].src
         }
+        if(returnedDetails.product.variants.nodes.length > 1) {
+          productDetails.value.variants = returnedDetails.product.variants.nodes
+          productDetails.value.defaultVariant = returnedDetails.product.variants.nodes[0].title
+          multiVariant.value = true
+        }
       })
+
     const buyNow = () => {
       const url = `https://pooks-treats.myshopify.com/cart/${productDetails.value.variant}:1?ref=publitas`
       window.open(url)
     }
 
     const reduceQuantity = () => {
-        if (productDetails.value.quantity > 1) {
-          productDetails.value.quantity -= 1
-        }
+      if (productDetails.value.quantity > 1) {
+        productDetails.value.quantity -= 1
       }
-      const increaseQuantity = () => {
-        productDetails.value.quantity += 1
-      }
+    }
+    const increaseQuantity = () => {
+      productDetails.value.quantity += 1
+    }
 
-      const addToCart = () => {
-        console.log("in cart")
-        const itemToCart = {'product': rawParams, 'variant': productDetails.value.variant, 'quantity': productDetails.value.quantity, 'from': 'product' }
-        window.parent.postMessage(JSON.stringify(itemToCart), "*")
-      }
+    const addToCart = () => {
+      const itemToCart = {'product': rawParams, 'variant': productDetails.value.variant, 'quantity': productDetails.value.quantity, 'from': 'product' }
+      window.parent.postMessage(JSON.stringify(itemToCart), "*")
+    }
+
+    const setVariant = (rawId, title, price, compareAtPrice) => {
+      const variantSplitArray = rawId.split('/')
+      productDetails.value.variant = variantSplitArray[variantSplitArray.length - 1]
+      productDetails.value.defaultVariant = title
+      productDetails.value.price = parseFloat(price).toFixed(2)
+      if(compareAtPrice != null) productDetails.value.fullPrice = parseFloat(compareAtPrice).toFixed(2)
+    }
 
     return {
       result,
@@ -87,13 +114,27 @@ export default defineComponent({
       buyNow,
       increaseQuantity,
       reduceQuantity,
-      addToCart
+      addToCart,
+      multiVariant,
+      setVariant
     }
   }
 })
 </script>
 
 <style scoped>
+
+  .variant {
+    width: 96%;
+    display:  flex;
+    justify-content: space-between;
+    padding: 2%;
+    cursor: pointer;
+  }
+
+  .border {
+    border:  2px solid black;
+  }
 
   .container {
     width: 50%;
@@ -118,6 +159,7 @@ export default defineComponent({
 
   h4, h1, p {
     margin: 4px;
+    text-align:  left;
   }
 
   .line-through {
