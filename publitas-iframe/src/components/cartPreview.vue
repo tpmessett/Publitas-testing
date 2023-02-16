@@ -30,6 +30,7 @@
       product: Object
     },
     setup(props, { emit }) {
+      console.log(props)
       const productDetails = ref ({
         quantity: props.product.quantity,
         title: "",
