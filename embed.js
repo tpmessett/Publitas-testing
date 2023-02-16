@@ -24,15 +24,25 @@ window.viewerReady = function (api, platform) {
     openIframe(url)
   });
 
+  // custom cart link inside publication
+  api.setLinkAction(function (url) {
+    if (url === "http://pookstreats.com"){
+      getCart()
+    } else {
+      console.log(url)
+    }
+  });
+
   // set cart button name and action
   api.setCartButtonAction(function () {
-    // get cart
-    const cart = localStorage.getItem('cart')
-    // pass cart items to URL to load
-    url = `https://main--sparkly-buttercream-3719ff.netlify.app/?${encodeURIComponent(cart)}`
-    // display cart on click
-    openIframe(url)
+    getCart()
   }, "View Cart");
+
+  const getCart = () => {
+    const cart = localStorage.getItem('cart')
+    url = `https://main--sparkly-buttercream-3719ff.netlify.app/?${encodeURIComponent(cart)}`
+    openIframe(url)
+  }
 
   // set checkout button
   api.addMenuItem({
