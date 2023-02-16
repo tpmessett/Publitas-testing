@@ -36,18 +36,31 @@
         title: "",
         description: "",
         price: 0.00,
+        variant: props.product.variant
       })
       const productInCart = ref(false)
       const result = getProduct(props.product.id)
       watch(result, (returnedDetails) => {
         productDetails.value.title = returnedDetails.product.title
         productDetails.value.description = returnedDetails.product.description
-        productDetails.value.price = parseFloat(returnedDetails.product.variants.nodes[0].price.amount).toFixed(2)
-        const variantSplitArray = returnedDetails.product.variants.nodes[0].id.split('/')
-        productDetails.value.variant = variantSplitArray[variantSplitArray.length - 1]
+        productDetails.value.price = getIndex(returnedDetails.product.variants.nodes)
+        //productDetails.value.price = parseFloat(returnedDetails.product.variants.nodes[0].price.amount).toFixed(2)
         productInCart.value = true
         cartBuilder()
       })
+
+      const getIndex = (array) => {
+        let price = 0.0
+        console.log(array)
+        array.forEach(item => {
+          const splitArray = item.id.split('/')
+          if(props.product.variant === splitArray[splitArray.length - 1]) {
+            price = parseFloat(item.price.amount).toFixed(2)
+          }
+        })
+        return price
+      }
+
       const reduceQuantity = () => {
         productDetails.value.quantity -= 1
         if (productDetails.value.quantity < 1) {
