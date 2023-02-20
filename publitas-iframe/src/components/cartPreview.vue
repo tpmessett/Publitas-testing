@@ -1,6 +1,6 @@
 <template>
   <div v-if="productInCart" class="cart-outline">
-    <div v-if="result" class="cart-item">
+    <div class="cart-item">
       <div>
         <h3>{{productDetails.title}}</h3>
         <p>{{productDetails.description}}</p>
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import { defineComponent, watch, ref } from 'vue';
+  import { defineComponent, ref } from 'vue';
   import getProduct from '@/services/queries';
   export default defineComponent({
     name: 'product',
@@ -37,16 +37,21 @@
         price: 0.00,
         variant: props.product.variant
       })
+
       const productInCart = ref(false)
-      const result = getProduct(props.product.id)
-      watch(result, (returnedDetails) => {
-        productDetails.value.title = returnedDetails.product.title
-        productDetails.value.description = returnedDetails.product.description
-        productDetails.value.price = getIndex(returnedDetails.product.variants.nodes)
-        //productDetails.value.price = parseFloat(returnedDetails.product.variants.nodes[0].price.amount).toFixed(2)
-        productInCart.value = true
-        cartBuilder()
-      })
+      const result = async () => {
+        getProduct(props.product.id).then(function(result) {
+          console.log('returned')
+          console.log(result.product)
+          productDetails.value.title = result.product.title
+          productDetails.value.description = result.product.description
+          productDetails.value.price = getIndex(result.product.variants.nodes)
+          //productDetails.value.price = parseFloat(returnedDetails.product.variants.nodes[0].price.amount).toFixed(2)
+          productInCart.value = true
+          cartBuilder()
+        })
+      }
+      result()
 
       const getIndex = (array) => {
         let price = 0.0
@@ -78,7 +83,6 @@
 
       return {
         productDetails,
-        result,
         reduceQuantity,
         increaseQuantity,
         productInCart

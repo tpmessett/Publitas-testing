@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client/core"
 import { useQuery } from "@vue/apollo-composable";
 
-export default function getProduct(id){
+export default async function getProduct(id){
   const PRODUCT_QUERY = gql`
       query {
         product(id: "gid://shopify/Product/${id}") {
