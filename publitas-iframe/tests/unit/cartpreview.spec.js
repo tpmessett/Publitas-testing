@@ -44,81 +44,6 @@ jest.mock('@/services/queries', () => () => {
 }
 });
 
-// describe('cartPreview.vue', () => {
-//   let wrapper
-
-//   beforeEach(() => {
-//     wrapper = mount(cartPreview, {
-//       props: {
-//         product: {
-//           id: '1',
-//           quantity: 2,
-//           variant: 'red'
-//         }
-//       }
-//     })
-//   })
-
-//   it('renders the product details correctly', async () => {
-//     // Mock the getProduct function
-//     const mockProduct = {
-//       product: {
-//         title: 'Test Product',
-//         description: 'This is a test product',
-//         variants: {
-//           nodes: [
-//             {
-//               id: '/products/1/variants/red',
-//               price: {
-//                 amount: '10.00'
-//               }
-//             }
-//           ]
-//         }
-//       }
-//     }
-//     const getProduct = jest.fn(() => Promise.resolve(mockProduct))
-//     wrapper.vm.$options.setup[0](wrapper.props(), { emit: jest.fn() }, { getProduct })
-//     await wrapper.vm.$nextTick()
-
-//     // Assert that the product details are rendered correctly
-//     expect(wrapper.find('h3').text()).toBe('Test Product')
-//     expect(wrapper.find('p').text()).toBe('This is a test product')
-//     expect(wrapper.find('.amount').text()).toBe('2')
-//     expect(wrapper.find('.cart-outline').isVisible()).toBe(true)
-//   })
-
-//   it('emits a cart event when the quantity is increased', async () => {
-//     const button = wrapper.find('.cart-quantity button:last-child')
-//     button.trigger('click')
-//     await wrapper.vm.$nextTick()
-
-//     expect(wrapper.emitted('cart')).toBeTruthy()
-//     expect(wrapper.emitted('cart').length).toBe(1)
-//     expect(wrapper.emitted('cart')[0][0]).toEqual({
-//       product: '1',
-//       variant: 'red',
-//       quantity: 3,
-//       from: 'cart'
-//     })
-//   })
-
-//   it('emits a cart event when the quantity is reduced', async () => {
-//     const button = wrapper.find('.cart-quantity button:first-child')
-//     button.trigger('click')
-//     await wrapper.vm.$nextTick()
-
-//     expect(wrapper.emitted('cart')).toBeTruthy()
-//     expect(wrapper.emitted('cart').length).toBe(1)
-//     expect(wrapper.emitted('cart')[0][0]).toEqual({
-//       product: '1',
-//       variant: 'red',
-//       quantity: 1,
-//       from: 'cart'
-//     })
-//   })
-// })
-
 
 describe('cartPreview.vue', () => {
   it('renders the correct amount for a product', async () => {
@@ -161,7 +86,6 @@ describe('cartPreview.vue', () => {
         }
       }
     }
-    const getProduct = jest.fn(() => Promise.resolve('@/services/queries'))
     const wrapper = mount(cartPreview, {
       propsData:
         {
@@ -172,6 +96,7 @@ describe('cartPreview.vue', () => {
         }
        }
     });
+    const getProduct = jest.fn(() => Promise.resolve('@/services/queries'))
     expect(productDetails.value.quantity).toBe(10);
   })
   it('renders cart outline div', async () => {
@@ -214,7 +139,6 @@ describe('cartPreview.vue', () => {
         }
       }
     }
-    const getProduct = jest.fn(() => Promise.resolve(mockProduct))
     const wrapper = mount(cartPreview, {
       propsData:
         {
@@ -225,6 +149,7 @@ describe('cartPreview.vue', () => {
         }
        }
     });
+    const getProduct = jest.fn(() => Promise.resolve('@/services/queries'))
     expect(wrapper.find('.cart-outline').exists()).toBeTruthy()
   })
 })
